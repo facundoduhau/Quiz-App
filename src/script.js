@@ -33,7 +33,9 @@ const quizChoices = document.getElementById('quizChoices');
 const quizIntro = document.getElementById('quizIntro');
 const startButton = document.getElementById('startBtn');
 
-var currentQuestion = 1;
+var correctChoiceSelected = false;
+
+var currentQuestion = 0;
 
 var points = 0;
 
@@ -44,12 +46,16 @@ startButton.addEventListener('click', () => {
 });
 
 nextButton.addEventListener('click', () => {
+	currentQuestion++;
+	if (correctChoiceSelected) {
+		points++;
+	}
+	console.log(`Points: ${points}`);
 	if (currentQuestion < quizQuestions.length) {
 		showQuestion();
 	} else {
 		showResults();
 	}
-	currentQuestion++;
 });
 
 function showQuestion(){
@@ -61,10 +67,27 @@ function showQuestion(){
 		choiceElement.textContent = choice;
 		choiceElement.addEventListener('click', () => {
 			if (choice === questionNumber.answer) {
-				points++;
+				correctChoiceSelected = true;
+				console.log(correctChoiceSelected)
 			}
-			quizContainer.classList.add('hidden');
+			else{
+				correctChoiceSelected = false;
+				console.log(correctChoiceSelected)
+			}
+			quizChoices.querySelectorAll('.bg-gray-300').forEach(child => {
+                child.classList.remove('bg-gray-300', 'p-2', 'pl-6', 'pr-6', 'rounded-xl', 'cursor-pointer');
+			})
+			choiceElement.classList.add('bg-gray-300', 'p-2', 'pl-6', 'pr-6', 'rounded-xl', 'cursor-pointer', );
 		});
 		quizChoices.appendChild(choiceElement);
 	});	
+}
+
+function showResults(){
+	quizContainer.innerHTML = `
+		<div class="h-full w-full flex flex-col items-center justify-center">
+			<p class="text-5xl font-extrabold mb-6">Quiz Completed!</p>
+			<p class="text-3xl font-semibold">Your Score: ${points} / ${quizQuestions.length}</p>
+		</div>
+	`;
 }
