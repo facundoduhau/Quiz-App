@@ -28,18 +28,43 @@ const quizQuestions = [
 
 const nextButton = document.getElementById('nextBtn');
 const quizContainer = document.getElementById('quizContainer');
-const quizQuestion = document.getElementById('quizQuestion');
+const quizTitle = document.getElementById('quizQuestion');
 const quizChoices = document.getElementById('quizChoices');
 const quizIntro = document.getElementById('quizIntro');
 const startButton = document.getElementById('startBtn');
 
+var currentQuestion = 1;
+
+var points = 0;
+
 startButton.addEventListener('click', () => {
 	quizIntro.classList.add('hidden');
 	quizContainer.classList.remove('hidden');
+	showQuestion();
 });
 
 nextButton.addEventListener('click', () => {
-	console.log('Next button clicked');
-	quizContainer.classList.remove('hidden');
-	quizIntro.classList.remove('hidden');
+	if (currentQuestion < quizQuestions.length) {
+		showQuestion();
+	} else {
+		showResults();
+	}
+	currentQuestion++;
 });
+
+function showQuestion(){
+	var questionNumber = quizQuestions[currentQuestion];
+	quizTitle.textContent = questionNumber.question;
+	quizChoices.innerHTML = '';
+	questionNumber.choices.forEach(choice => {
+		const choiceElement = document.createElement('p');
+		choiceElement.textContent = choice;
+		choiceElement.addEventListener('click', () => {
+			if (choice === questionNumber.answer) {
+				points++;
+			}
+			quizContainer.classList.add('hidden');
+		});
+		quizChoices.appendChild(choiceElement);
+	});	
+}
